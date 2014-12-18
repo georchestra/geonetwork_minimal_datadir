@@ -208,10 +208,10 @@
 		<xsl:for-each select="$s/wms:AccessConstraints">
 			<resourceConstraints>
 				<MD_LegalConstraints>
-                                        <!-- useLimitation obligatoire pour INSPIRE -->
-                                        <useLimitation>
-                                           <gco:CharacterString>Conditions Générales d'Utilisation http://cms.geobretagne.fr/</gco:CharacterString>
-                                        </useLimitation>
+					<!-- useLimitation is mandatory for INSPIRE -->
+					<useLimitation>
+						<gco:CharacterString>Conditions Générales d'Utilisation</gco:CharacterString>
+					</useLimitation>
 					<xsl:choose>
 						<xsl:when test=". = 'copyright'
 							or . = 'patent'
@@ -382,40 +382,37 @@
 			</srv:SV_CouplingType>
 		</srv:couplingType>
 
-
-        <!-- geobretagne -->
-         <srv:containsOperations>
-            <srv:SV_OperationMetadata>
-               <srv:operationName>
-                  <gco:CharacterString>GetCapabilities</gco:CharacterString>
-               </srv:operationName>
-               <srv:DCP>
-                  <srv:DCPList codeList="http://www.isotc211.org/2005/iso19119/resources/Codelist/gmxCodelists.xml#DCPList"
-                               codeListValue="WebServices"/>
-               </srv:DCP>
-               <srv:connectPoint>
-                  <CI_OnlineResource>
-                     <linkage>
-                        <URL><xsl:value-of select="..//*[1]/OnlineResource/@xlink:href|..//*[1]/wms:OnlineResource/@xlink:href"/></URL>
-                     </linkage>
-                     <protocol>
-                        <gco:CharacterString>text/xml</gco:CharacterString>
-                     </protocol>
-                     <description>
-                        <gco:CharacterString>Format : text/xml</gco:CharacterString>
-                     </description>
-                     <function>
-                        <CI_OnLineFunctionCode codeList="./resources/codeList.xml#CI_OnLineFunctionCode"
-                                                   codeListValue="information"/>
-                     </function>
-                  </CI_OnlineResource>
-               </srv:connectPoint>
+		<!-- georchestra -->
+		<srv:containsOperations>
+			<srv:SV_OperationMetadata>
+				<srv:operationName>
+					<gco:CharacterString>GetCapabilities</gco:CharacterString>
+				</srv:operationName>
+				<srv:DCP>
+					<srv:DCPList codeList="http://www.isotc211.org/2005/iso19119/resources/Codelist/gmxCodelists.xml#DCPList"
+						codeListValue="WebServices"/>
+                </srv:DCP>
+                <srv:connectPoint>
+                    <CI_OnlineResource>
+                        <linkage>
+                            <URL><xsl:value-of select="..//*[1]/OnlineResource/@xlink:href|..//*[1]/wms:OnlineResource/@xlink:href"/></URL>
+                        </linkage>
+                        <protocol>
+                            <gco:CharacterString>text/xml</gco:CharacterString>
+                        </protocol>
+                        <description>
+                            <gco:CharacterString>Format : text/xml</gco:CharacterString>
+                        </description>
+                        <function>
+                            <CI_OnLineFunctionCode codeList="./resources/codeList.xml#CI_OnLineFunctionCode"
+                                codeListValue="information"/>
+                        </function>
+                    </CI_OnlineResource>
+                </srv:connectPoint>
             </srv:SV_OperationMetadata>
-         </srv:containsOperations>
-         <!-- fin geobretagne -->
+		</srv:containsOperations>
+		<!-- end georchestra -->
 
-		
-		
 		<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 		Done by harvester after data metadata creation
 		<xsl:for-each select="//Layer[count(./*[name(.)='Layer'])=0] | FeatureType[count(./*[name(.)='FeatureType'])=0] | CoverageOfferingBrief[count(./*[name(.)='CoverageOfferingBrief'])=0]">
