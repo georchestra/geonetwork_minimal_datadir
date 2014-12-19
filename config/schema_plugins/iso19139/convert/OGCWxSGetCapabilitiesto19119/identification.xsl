@@ -210,7 +210,7 @@
 				<MD_LegalConstraints>
 					<!-- useLimitation is mandatory for INSPIRE -->
 					<useLimitation>
-						<gco:CharacterString>Conditions Générales d'Utilisation</gco:CharacterString>
+						<gco:CharacterString>Terms of Use</gco:CharacterString>
 					</useLimitation>
 					<xsl:choose>
 						<xsl:when test=". = 'copyright'

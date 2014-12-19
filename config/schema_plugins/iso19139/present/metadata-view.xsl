@@ -526,7 +526,7 @@
         <xsl:for-each-group select="descendant::gmd:onLine[gmd:CI_OnlineResource/gmd:linkage/gmd:URL!='']" group-by="gmd:CI_OnlineResource/gmd:protocol">
         <tr>
           <td class="main">
-            <!-- Usually, protocole format is OGC:WMS-version-blahblah, remove ':' and get
+            <!-- Usually, protocol format is OGC:WMS-version-blahblah, remove ':' and get
             prefix of the protocol to set the CSS icon class-->
             <xsl:variable name="protocolIcon">
               <xsl:choose>
@@ -552,7 +552,7 @@
                   </xsl:apply-templates>
                 </xsl:variable>
                 <li>
-                  <a href="{gmd:CI_OnlineResource/gmd:linkage/gmd:URL}">
+                  <a href="#" onclick="javascript:catalogue.showDownloadForm('{ancestor::*[name() = 'gmd:MD_Metadata']/geonet:info/id}', '{gmd:CI_OnlineResource/gmd:linkage/gmd:URL}')">
                     <xsl:choose>
                       <xsl:when test="contains(current-grouping-key(), 'OGC') or contains(current-grouping-key(), 'DOWNLOAD')">
                         <!-- Name contains layer, feature type, coverage ... -->
@@ -604,6 +604,12 @@
                               '{gmd:CI_OnlineResource/gmd:linkage/gmd:URL}', 
                               '{gmd:CI_OnlineResource/gmd:name/gco:CharacterString}', '{generate-id()}']]);">&#160;</a>
 -->                  </xsl:if>
+                  <xsl:if test="contains(current-grouping-key(), 'WMC')">
+                    &#160;
+                    <!--  Add WMC to geOrchestra mapfish app -->
+                    <a href="#" class="md-mn addLayer"
+                       onclick="window.open('/mapfishapp/?wmc={gmd:CI_OnlineResource/gmd:linkage/gmd:URL}');">&#160;</a>
+                   </xsl:if>
                 </li>
               </xsl:for-each>
             </ul>

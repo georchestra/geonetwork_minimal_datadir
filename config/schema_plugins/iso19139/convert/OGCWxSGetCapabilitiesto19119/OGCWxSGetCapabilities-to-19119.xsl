@@ -263,39 +263,39 @@ Mapping between :
 						</DQ_Scope>
 					</scope>
 				
-                                         <!-- validation INSPIRE statique -->
-         <report>
-            <DQ_DomainConsistency>
-               <result>
-                  <DQ_ConformanceResult>
-                     <specification>
-                        <CI_Citation>
-                           <title>
-                              <gco:CharacterString>COMMISSION REGULATION implementing Directive 2007/2/EC of the European Parliament and of the Council as regards interoperability of spatial data sets and services</gco:CharacterString>
-                           </title>
-                           <date>
-                              <CI_Date>
-                                 <date>
-                                    <gco:Date>2010-12-10</gco:Date>
-                                 </date>
-                                 <dateType>
-                                    <CI_DateTypeCode codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/ML_gmxCodelists.xml#CI_DateTypeCode"
-                                                         codeListValue="publication"/>
-                                 </dateType>
-                              </CI_Date>
-                           </date>
-                        </CI_Citation>
-                     </specification>
-                     <explanation>
-                        <gco:CharacterString>Conformite non evaluee</gco:CharacterString>
-                     </explanation>
-                     <pass>
-                        <gco:Boolean>0</gco:Boolean>
-                     </pass>
-                  </DQ_ConformanceResult>
-               </result>
-            </DQ_DomainConsistency>
-         </report>
+ 					<!-- static INSPIRE validation -->
+					<report>
+						<DQ_DomainConsistency>
+							<result>
+								<DQ_ConformanceResult>
+									<specification>
+										<CI_Citation>
+											<title>
+												<gco:CharacterString>COMMISSION REGULATION implementing Directive 2007/2/EC of the European Parliament and of the Council as regards interoperability of spatial data sets and services</gco:CharacterString>
+											</title>
+											<date>
+												<CI_Date>
+													<date>
+														<gco:Date>2010-12-10</gco:Date>
+													</date>
+													<dateType>
+														<CI_DateTypeCode codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/ML_gmxCodelists.xml#CI_DateTypeCode" codeListValue="publication"/>
+													</dateType>
+												</CI_Date>
+											</date>
+										</CI_Citation>
+									</specification>
+									<!-- gmd:explanation is mandated by ISO 19115. A default value is proposed -->
+									<explanation>
+										<gco:CharacterString>Conformity has not been evaluated</gco:CharacterString>
+									</explanation>
+									<pass gco:nilReason="unknown">
+										<gco:Boolean/>
+									</pass>
+								</DQ_ConformanceResult>
+							</result>
+						</DQ_DomainConsistency>
+					</report>
 
 
 	
