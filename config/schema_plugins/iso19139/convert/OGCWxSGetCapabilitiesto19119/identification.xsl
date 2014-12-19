@@ -254,9 +254,9 @@
 				<xsl:choose>
 					<xsl:when test="//inspire_vs:ExtendedCapabilities/inspire_common:SpatialDataServiceType"><xsl:value-of select="//inspire_vs:ExtendedCapabilities/inspire_common:SpatialDataServiceType"/></xsl:when>
 					<xsl:when test="name(.)='WMT_MS_Capabilities' or name(.)='WMS_Capabilities'">view</xsl:when>
-					<xsl:when test="name(.)='WCS_Capabilities'">OGC:WCS</xsl:when>
-					<xsl:when test="name(.)='wps:Capabilities'">OGC:WPS</xsl:when>
-					<xsl:otherwise>OGC:WFS</xsl:otherwise>
+					<xsl:when test="name(.)='WCS_Capabilities'">download</xsl:when>
+					<xsl:when test="name(.)='wps:Capabilities'">invoke</xsl:when>
+					<xsl:otherwise>download</xsl:otherwise>
 				</xsl:choose>
 			</gco:LocalName>
 		</srv:serviceType>
