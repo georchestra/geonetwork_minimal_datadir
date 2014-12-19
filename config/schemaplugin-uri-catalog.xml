@@ -9,11 +9,10 @@
 			 to include presentation xslts from schemas that are plugged in -->
   <!-- plug in schemas - come next - managed by schema.add/update/delete -->
   <rewriteURI uriStartString="blanks/metadata-schema01" rewritePrefix="/home/geoadm/geobretagne/data/geonetwork-data/config/schema_plugins/iso19139" />
-  <rewriteURI uriStartString="blanks/metadata-schema02" rewritePrefix="/home/geoadm/geobretagne/data/geonetwork-data/config/schema_plugins/iso19139.fra" />
-  <rewriteURI uriStartString="blanks/metadata-schema03" rewritePrefix="/home/geoadm/geobretagne/data/geonetwork-data/config/schema_plugins/dublin-core" />
-  <rewriteURI uriStartString="blanks/metadata-schema04" rewritePrefix="/home/geoadm/geobretagne/data/geonetwork-data/config/schema_plugins/iso19115" />
-  <rewriteURI uriStartString="blanks/metadata-schema05" rewritePrefix="/home/geoadm/geobretagne/data/geonetwork-data/config/schema_plugins/iso19110" />
-  <rewriteURI uriStartString="blanks/metadata-schema06" rewritePrefix="/home/geoadm/geobretagne/data/geonetwork-data/config/schema_plugins/csw-record" />
-  <rewriteURI uriStartString="blanks/metadata-schema07" rewritePrefix="/home/geoadm/geobretagne/data/geonetwork-data/config/schema_plugins/fgdc-std" />
+  <rewriteURI uriStartString="blanks/metadata-schema02" rewritePrefix="/home/geoadm/geobretagne/data/geonetwork-data/config/schema_plugins/dublin-core" />
+  <rewriteURI uriStartString="blanks/metadata-schema03" rewritePrefix="/home/geoadm/geobretagne/data/geonetwork-data/config/schema_plugins/iso19115" />
+  <rewriteURI uriStartString="blanks/metadata-schema04" rewritePrefix="/home/geoadm/geobretagne/data/geonetwork-data/config/schema_plugins/iso19110" />
+  <rewriteURI uriStartString="blanks/metadata-schema05" rewritePrefix="/home/geoadm/geobretagne/data/geonetwork-data/config/schema_plugins/csw-record" />
+  <rewriteURI uriStartString="blanks/metadata-schema06" rewritePrefix="/home/geoadm/geobretagne/data/geonetwork-data/config/schema_plugins/fgdc-std" />
 </catalog>
 
