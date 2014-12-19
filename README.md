@@ -13,11 +13,8 @@ The main differences with the data dir which ships with GeoNetwork in ```web/src
    * ```codelist/external/thesauri/theme/inspire-theme.rdf```
    * ```codelist/external/thesauri/theme/inspire-service-taxonomy.rdf```
  * updated files on both sides (they need special attention, see [#853](https://github.com/georchestra/georchestra/issues/853)):
-   * ```schema_plugins/iso19139/index-fields.xsl```
    * ```schema_plugins/iso19139/process/onlinesrc-add.xsl```
    * ```schema_plugins/iso19139/process/add-extent-from-geokeywords.xsl```
-   * ```schema_plugins/iso19139/present/metadata-view.xsl```
    * ```schema_plugins/iso19139/present/metadata-edit.xsl```
-   * ```schema_plugins/iso19139/loc/fre/codelists.xml```
    * ```schema_plugins/iso19139/convert/OGCWxSGetCapabilitiesto19119/identification.xsl```
    * ```schema_plugins/iso19139/convert/OGCWxSGetCapabilitiesto19119/OGCWxSGetCapabilities-to-19119.xsl```
