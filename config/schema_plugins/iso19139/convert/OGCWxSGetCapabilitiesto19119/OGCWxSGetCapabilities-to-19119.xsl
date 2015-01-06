@@ -262,8 +262,18 @@ Mapping between :
 							</levelDescription>
 						</DQ_Scope>
 					</scope>
-				
- 					<!-- static INSPIRE validation -->
+					
+					<!-- 
+		                <inspire_common:Conformity>
+		                    <inspire_common:Specification>
+		                        <inspire_common:Title>-</inspire_common:Title>
+		                        <inspire_common:DateOfLastRevision>2013-01-01</inspire_common:DateOfLastRevision>
+		                    </inspire_common:Specification>
+		                    <inspire_common:Degree>notEvaluated</inspire_common:Degree>
+		                </inspire_common:Conformity>
+		                -->
+					<xsl:for-each select="//inspire_vs:ExtendedCapabilities/inspire_common:Conformity[
+						inspire_common:Degree='conformant' or inspire_common:Degree='notConformant']">
 					<report>
 						<DQ_DomainConsistency>
 							<result>
@@ -271,15 +281,15 @@ Mapping between :
 									<specification>
 										<CI_Citation>
 											<title>
-												<gco:CharacterString>COMMISSION REGULATION implementing Directive 2007/2/EC of the European Parliament and of the Council as regards interoperability of spatial data sets and services</gco:CharacterString>
+												<gco:CharacterString><xsl:value-of select="inspire_common:Specification/inspire_common:Title"/></gco:CharacterString>
 											</title>
 											<date>
 												<CI_Date>
 													<date>
-														<gco:Date>2010-12-10</gco:Date>
+														<gco:Date><xsl:value-of select="inspire_common:Specification/inspire_common:DateOfLastRevision"/></gco:Date>
 													</date>
 													<dateType>
-														<CI_DateTypeCode codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/ML_gmxCodelists.xml#CI_DateTypeCode" codeListValue="publication"/>
+														<CI_DateTypeCode codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/ML_gmxCodelists.xml#CI_DateTypeCode" codeListValue="revision"/>
 													</dateType>
 												</CI_Date>
 											</date>
@@ -287,18 +297,33 @@ Mapping between :
 									</specification>
 									<!-- gmd:explanation is mandated by ISO 19115. A default value is proposed -->
 									<explanation>
-										<gco:CharacterString>Conformity has not been evaluated</gco:CharacterString>
+										<gco:CharacterString>See the referenced specification</gco:CharacterString>
 									</explanation>
-									<pass gco:nilReason="unknown">
-										<gco:Boolean/>
-									</pass>
+									<!-- the value is false instead of true if not conformant -->
+									<xsl:choose>
+										<xsl:when test="inspire_common:Degree='conformant'">
+											<pass>
+												<gco:Boolean>true</gco:Boolean>
+											</pass>
+										</xsl:when>
+										<xsl:when test="inspire_common:Degree='notConformant'">
+											<pass>
+												<gco:Boolean>false</gco:Boolean>
+											</pass>
+										</xsl:when>
+										<xsl:otherwise>
+											<!-- Not evaluated -->
+											<pass gco:nilReason="unknown">
+												<gco:Boolean/>
+											</pass>
+										</xsl:otherwise>
+									</xsl:choose>
+									
 								</DQ_ConformanceResult>
 							</result>
 						</DQ_DomainConsistency>
 					</report>
-
-
-	
+					</xsl:for-each>
 					<lineage>
 						<LI_Lineage>
 							<statement gco:nilReason="missing">

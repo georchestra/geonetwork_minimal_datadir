@@ -381,38 +381,124 @@
 				</xsl:choose>
 			</srv:SV_CouplingType>
 		</srv:couplingType>
-
-		<!-- georchestra -->
-		<srv:containsOperations>
-			<srv:SV_OperationMetadata>
-				<srv:operationName>
-					<gco:CharacterString>GetCapabilities</gco:CharacterString>
-				</srv:operationName>
-				<srv:DCP>
-					<srv:DCPList codeList="http://www.isotc211.org/2005/iso19119/resources/Codelist/gmxCodelists.xml#DCPList"
-						codeListValue="WebServices"/>
-                </srv:DCP>
-                <srv:connectPoint>
-                    <CI_OnlineResource>
-                        <linkage>
-                            <URL><xsl:value-of select="..//*[1]/OnlineResource/@xlink:href|..//*[1]/wms:OnlineResource/@xlink:href"/></URL>
-                        </linkage>
-                        <protocol>
-                            <gco:CharacterString>text/xml</gco:CharacterString>
-                        </protocol>
-                        <description>
-                            <gco:CharacterString>Format : text/xml</gco:CharacterString>
-                        </description>
-                        <function>
-                            <CI_OnLineFunctionCode codeList="./resources/codeList.xml#CI_OnLineFunctionCode"
-                                codeListValue="information"/>
-                        </function>
-                    </CI_OnlineResource>
-                </srv:connectPoint>
-            </srv:SV_OperationMetadata>
-		</srv:containsOperations>
-		<!-- end georchestra -->
-
+		
+		<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+            Operation could be OGC standard operation described in specification
+            OR a specific process in a WPS. In that case, each process are described
+            as one operation.
+        -->
+		
+		<xsl:for-each select="Capability/Request/*|
+								wfs:Capability/wfs:Request/*|
+								wms:Capability/wms:Request/*|
+                                wcs:Capability/wcs:Request/*|
+                                ows:OperationsMetadata/ows:Operation|
+                                ows11:OperationsMetadata/ows:Operation|
+                                wps:ProcessOfferings/*|
+                                wps1:ProcessOfferings/*">
+			<!-- Some services provide information about ows:ExtendedCapabilities TODO ? -->
+			<srv:containsOperations>
+				<srv:SV_OperationMetadata>
+					<srv:operationName>
+						<gco:CharacterString>
+							<xsl:choose>
+								<xsl:when test="name(.)='wps:Process'">WPS Process: <xsl:value-of select="ows:Title|ows11:Title"/></xsl:when>
+                                <xsl:when test="$ows='true'"><xsl:value-of select="@name"/></xsl:when>
+								<xsl:otherwise><xsl:value-of select="name(.)"/></xsl:otherwise>
+							</xsl:choose>
+						</gco:CharacterString>
+					</srv:operationName>
+					<!--  CHECKME : DCPType/SOAP ? -->
+					<xsl:for-each select="DCPType/HTTP/*|wfs:DCPType/wfs:HTTP/*|wms:DCPType/wms:HTTP/*|
+							wcs:DCPType/wcs:HTTP/*|ows:DCP/ows:HTTP/*|ows11:DCP/ows11:HTTP/*">
+						<srv:DCP>
+							<srv:DCPList codeList="./resources/codeList.xml#DCPList">
+								<xsl:variable name="dcp">
+									<xsl:choose>
+										<xsl:when test="name(.)='Get' or name(.)='wfs:Get' or name(.)='wms:Get' or name(.)='wcs:Get' or name(.)='ows:Get' or name(.)='ows11:Get'">HTTP-GET</xsl:when>
+										<xsl:when test="name(.)='Post' or name(.)='wfs:Post' or name(.)='wms:Post' or name(.)='wcs:Post' or name(.)='ows:Post' or name(.)='ows11:Post'">HTTP-POST</xsl:when>
+										<xsl:otherwise>WebServices</xsl:otherwise>
+									</xsl:choose>
+								</xsl:variable>
+								<xsl:attribute name="codeListValue">
+									<xsl:value-of select="$dcp"/>
+								</xsl:attribute>
+							</srv:DCPList>
+						</srv:DCP>
+					</xsl:for-each>
+          
+                    <xsl:if test="name(.)='wps:Process' or name(.)='wps11:ProcessOfferings'">
+                      <srv:operationDescription>
+                          <gco:CharacterString><xsl:value-of select="ows:Abstract|ows11:Title"/></gco:CharacterString> 
+                      </srv:operationDescription> 
+                      <srv:invocationName>
+                          <gco:CharacterString><xsl:value-of select="ows:Identifier|ows11:Identifier"/></gco:CharacterString> 
+                      </srv:invocationName> 
+                    </xsl:if>
+                    
+					<xsl:for-each select="Format|wms:Format|ows:Parameter[@name='AcceptFormats' or @name='outputFormat']">
+						<srv:connectPoint>
+							<CI_OnlineResource>
+								<linkage>
+									<URL>
+										<xsl:choose>
+											<xsl:when test="$ows='true'">
+												<xsl:value-of select="..//ows:Get[1]/@xlink:href"/><!-- FIXME supposed at least one Get -->
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:value-of select="..//*[1]/OnlineResource/@xlink:href|
+													..//*[1]/wms:OnlineResource/@xlink:href"/>
+											</xsl:otherwise>
+										</xsl:choose>
+									</URL>
+								</linkage>
+								<protocol>
+									<gco:CharacterString>
+										<xsl:choose>
+											<xsl:when test="$ows='true'">
+												<xsl:value-of select="ows:Value"/>
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:value-of select="."/>
+											</xsl:otherwise>
+										</xsl:choose>
+									</gco:CharacterString>
+								</protocol>
+								<description>
+                                    <gco:CharacterString>
+                                          Format : <xsl:value-of select="."/>
+                                    </gco:CharacterString>
+                                </description>
+								<function>
+									<CI_OnLineFunctionCode codeList="./resources/codeList.xml#CI_OnLineFunctionCode" codeListValue="information"/>
+								</function>
+							</CI_OnlineResource>
+						</srv:connectPoint>
+					</xsl:for-each>
+					
+							
+					<!-- Some Operations in WFS 1.0.0 have no ResultFormat no CI_OnlineResource created 
+							WCS has no output format
+					-->
+					<xsl:for-each select="wfs:ResultFormat/*">
+						<srv:connectPoint>
+							<CI_OnlineResource>
+								<linkage>
+									<URL><xsl:value-of select="../..//wfs:Get[1]/@onlineResource"/></URL>
+								</linkage>
+								<protocol>
+									<gco:CharacterString><xsl:value-of select="name(.)"/></gco:CharacterString>
+								</protocol>
+								<function>
+									<CI_OnLineFunctionCode codeList="./resources/codeList.xml#CI_OnLineFunctionCode" codeListValue="information"/>
+								</function>
+							</CI_OnlineResource>
+						</srv:connectPoint>
+					</xsl:for-each>
+				</srv:SV_OperationMetadata>
+			</srv:containsOperations>
+		</xsl:for-each>
+		
 		<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 		Done by harvester after data metadata creation
 		<xsl:for-each select="//Layer[count(./*[name(.)='Layer'])=0] | FeatureType[count(./*[name(.)='FeatureType'])=0] | CoverageOfferingBrief[count(./*[name(.)='CoverageOfferingBrief'])=0]">
