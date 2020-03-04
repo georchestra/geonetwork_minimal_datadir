@@ -1019,6 +1019,7 @@
     <xsl:variable name="orgName" select="gmd:organisationName/(gco:CharacterString|gmx:Anchor)"/>
 
     <Field name="orgName" string="{string($orgName)}" store="true" index="true"/>
+    <Field name="_orgName" string="{string($orgName)}" store="true" index="true"/>
     <Field name="orgNameTree" string="{string($orgName)}" store="true" index="true"/>
 
     <xsl:variable name="uuid" select="@uuid"/>
