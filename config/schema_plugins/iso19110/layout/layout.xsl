@@ -59,6 +59,7 @@
                     select="gn-fn-metadata:getLabel($schema, $name, $labels)"/>
       <xsl:call-template name="render-element-to-add">
         <xsl:with-param name="label" select="$label/label"/>
+        <xsl:with-param name="class" select="if ($label/class) then $label/class else ''"/>
         <xsl:with-param name="btnLabel" select="if ($label/btnLabel) then $label/btnLabel else ''"/>
         <xsl:with-param name="btnClass" select="if ($label/btnClass) then $label/btnClass else ''"/>
         <xsl:with-param name="directive" select="$directive"/>
@@ -122,12 +123,76 @@
 
   </xsl:template>
 
+  <!-- Render simple element wi9th gmx:Anchor which usually match a form field -->
+  <xsl:template mode="mode-iso19110" priority="1000"
+                match="*[gmx:Anchor]">
+
+    <xsl:variable name="elementSchema"
+                  select="if(namespace-uri() = 'http://www.isotc211.org/2005/gfc')
+      then $labels else $iso19139labels"/>
+    <xsl:variable name="elementSchemaIdentifier"
+                  select="if(namespace-uri() = 'http://www.isotc211.org/2005/gfc')
+      then $schema else 'iso19139'"/>
+    <xsl:variable name="elementName" select="name()"/>
+
+    <xsl:variable name="xpath" select="gn-fn-metadata:getXPath(.)"/>
+    <xsl:variable name="isoType" select="if (../@gco:isoType) then ../@gco:isoType else ''"/>
+    <xsl:variable name="labelConfig"
+                  select="gn-fn-metadata:getLabel($elementSchemaIdentifier, name(), $elementSchema, name(..), $isoType, $xpath)"/>
+    <xsl:variable name="helper" select="gn-fn-metadata:getHelper($labelConfig/helper, .)"/>
+
+    <xsl:variable name="attributes">
+      <xsl:if test="$isEditing">
+
+        <!-- Create form for all existing attribute (not in gn namespace)
+        and all non existing attributes not already present for the
+        current element and its children (eg. @uom in gco:Distance).
+        A list of exception is defined in form-builder.xsl#render-for-field-for-attribute. -->
+        <xsl:apply-templates mode="render-for-field-for-attribute"
+                             select="
+              @*|
+              gn:attribute[not(@name = parent::node()/@*/name())]">
+          <xsl:with-param name="ref" select="gn:element/@ref"/>
+          <xsl:with-param name="insertRef" select="*/gn:element/@ref"/>
+        </xsl:apply-templates>
+        <xsl:apply-templates mode="render-for-field-for-attribute"
+                             select="
+          */@*|
+          */gn:attribute[not(@name = parent::node()/@*/name())]">
+          <xsl:with-param name="ref" select="*/gn:element/@ref"/>
+          <xsl:with-param name="insertRef" select="*/gn:element/@ref"/>
+        </xsl:apply-templates>
+      </xsl:if>
+    </xsl:variable>
+
+    <xsl:call-template name="render-element">
+      <xsl:with-param name="label" select="$labelConfig"/>
+      <xsl:with-param name="value" select="*"/>
+      <xsl:with-param name="cls" select="local-name()"/>
+      <!--<xsl:with-param name="widget"/>
+      <xsl:with-param name="widgetParams"/>-->
+      <xsl:with-param name="xpath" select="$xpath"/>
+      <xsl:with-param name="attributesSnippet" select="$attributes"/>
+      <xsl:with-param name="forceDisplayAttributes" select="true()" />
+      <xsl:with-param name="type"
+                      select="gn-fn-iso19110:getFieldType(name(),
+            name(gmx:Anchor), $xpath)"/>
+      <xsl:with-param name="name" select="if ($isEditing) then */gn:element/@ref else ''"/>
+      <xsl:with-param name="editInfo" select="*/gn:element"/>
+      <xsl:with-param name="parentEditInfo" select="gn:element"/>
+      <!-- TODO: Handle conditional helper -->
+      <xsl:with-param name="listOfValues" select="$helper"/>
+      <xsl:with-param name="isFirst"
+                      select="count(preceding-sibling::*[name() = $elementName]) = 0"/>
+    </xsl:call-template>
+  </xsl:template>
+
 
   <!-- Render simple element which usually match a form field -->
   <xsl:template mode="mode-iso19110" priority="100"
-                match="*[gco:CharacterString|gco:Date|gco:DateTime|gco:Integer|gco:Decimal|
-    gco:Boolean|gco:Real|gco:Measure|gco:Length|gco:Distance|gco:Angle|
-    gco:Scale|gco:RecordType|gmx:MimeFileType|gmd:URL|gco:LocalName]">
+                match="*[gco:CharacterString|gco:Date|gco:DateTime|gco:Integer|gco:UnlimitedInteger|
+                        gco:Decimal|gco:Boolean|gco:Real|gco:Measure|gco:Length|gco:Distance|gco:Angle|
+                        gco:Scale|gco:RecordType|gmx:MimeFileType|gmd:URL|gco:LocalName]">
 
     <xsl:variable name="elementSchema"
                   select="if(namespace-uri() = 'http://www.isotc211.org/2005/gfc')
@@ -180,7 +245,7 @@
                       select="gn-fn-iso19110:getFieldType(name(),
             name(gco:CharacterString|gco:Date|gco:DateTime|gco:Integer|gco:Decimal|
                 gco:Boolean|gco:Real|gco:Measure|gco:Length|gco:Distance|gco:Angle|
-                gco:Scale|gco:RecordType|gmx:MimeFileType|gmd:URL))"/>
+                gco:Scale|gco:RecordType|gmx:MimeFileType|gmd:URL), $xpath)"/>
       <xsl:with-param name="name" select="if ($isEditing) then */gn:element/@ref else ''"/>
       <xsl:with-param name="editInfo" select="*/gn:element"/>
       <xsl:with-param name="parentEditInfo" select="gn:element"/>

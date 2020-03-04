@@ -29,7 +29,8 @@
                 xmlns:gco="http://www.isotc211.org/2005/gco"
                 xmlns:gmx="http://www.isotc211.org/2005/gmx"
                 xmlns:xlink="http://www.w3.org/1999/xlink"
-                xmlns:gml="http://www.opengis.net/gml"
+                xmlns:gml="http://www.opengis.net/gml/3.2"
+                xmlns:gml320="http://www.opengis.net/gml"
                 xmlns:srv="http://www.isotc211.org/2005/srv"
                 xmlns:geonet="http://www.fao.org/geonetwork"
                 xmlns:util="java:org.fao.geonet.util.XslUtil"
@@ -54,7 +55,7 @@
   <xsl:param name="thesauriDir"/>
   <xsl:param name="inspire">false</xsl:param>
 
-  <xsl:variable name="inspire-thesaurus" select="if ($inspire!='false') then document(concat('file:///', $thesauriDir, '/external/thesauri/theme/inspire-theme.rdf')) else ''"/>
+  <xsl:variable name="inspire-thesaurus" select="if ($inspire!='false') then document(concat('file:///', $thesauriDir, '/external/thesauri/theme/httpinspireeceuropaeutheme-theme.rdf')) else ''"/>
   <xsl:variable name="inspire-theme" select="if ($inspire!='false') then $inspire-thesaurus//skos:Concept else ''"/>
 
   <!-- ========================================================================================= -->
@@ -159,6 +160,10 @@
     <xsl:param name="langId"/>
     <xsl:param name="isoLangId"/>
 
+    <xsl:for-each select="gmd:dateStamp/*">
+      <Field name="changeDate" string="{string(.)}" store="true" index="true"/>
+    </xsl:for-each>
+
     <!-- === Data or Service Identification === -->
 
     <!-- the double // here seems needed to index MD_DataIdentification when
@@ -259,23 +264,23 @@
 
         <xsl:for-each select="gmd:temporalElement/gmd:EX_TemporalExtent/gmd:extent|
           gmd:temporalElement/gmd:EX_SpatialTemporalExtent/gmd:extent">
-          <xsl:for-each select="gml:TimePeriod/gml:beginPosition">
+          <xsl:for-each select="gml:TimePeriod/gml:beginPosition|gml320:TimePeriod/gml320:beginPosition">
             <Field name="tempExtentBegin" string="{string(.)}" store="true" index="true"/>
           </xsl:for-each>
 
-          <xsl:for-each select="gml:TimePeriod/gml:endPosition">
+          <xsl:for-each select="gml:TimePeriod/gml:endPosition|gml320:TimePeriod/gml320:endPosition">
             <Field name="tempExtentEnd" string="{string(.)}" store="true" index="true"/>
           </xsl:for-each>
 
-          <xsl:for-each select="gml:TimePeriod/gml:begin/gml:TimeInstant/gml:timePosition">
+          <xsl:for-each select="gml:TimePeriod/gml:begin/gml:TimeInstant/gml:timePosition|gml320:TimePeriod/gml320:begin/gml320:TimeInstant/gml320:timePosition">
             <Field name="tempExtentBegin" string="{string(.)}" store="true" index="true"/>
           </xsl:for-each>
 
-          <xsl:for-each select="gml:TimePeriod/gml:end/gml:TimeInstant/gml:timePosition">
+          <xsl:for-each select="gml:TimePeriod/gml:end/gml:TimeInstant/gml:timePosition|gml320:TimePeriod/gml320:end/gml320:TimeInstant/gml320:timePosition">
             <Field name="tempExtentEnd" string="{string(.)}" store="true" index="true"/>
           </xsl:for-each>
 
-          <xsl:for-each select="gml:TimeInstant/gml:timePosition">
+          <xsl:for-each select="gml:TimeInstant/gml:timePosition|gml320:TimeInstant/gml320:timePosition">
             <Field name="tempExtentBegin" string="{string(.)}" store="true" index="true"/>
             <Field name="tempExtentEnd" string="{string(.)}" store="true" index="true"/>
           </xsl:for-each>
@@ -351,7 +356,8 @@
           <xsl:if test="count($keywordWithNoThesaurus) > 0">
             'keywords': [
             <xsl:for-each select="$keywordWithNoThesaurus/(gco:CharacterString|gmx:Anchor)">
-              <xsl:value-of select="concat('''', replace(., '''', '\\'''), '''')"/>
+              {'value': <xsl:value-of select="concat('''', replace(., '''', '\\'''), '''')"/>,
+              'link': '<xsl:value-of select="@xlink:href"/>'}
               <xsl:if test="position() != last()">,</xsl:if>
             </xsl:for-each>
             ]
@@ -363,8 +369,9 @@
                               group-by="gmd:thesaurusName/*/gmd:title/*/text()">
 
             '<xsl:value-of select="replace(current-grouping-key(), '''', '\\''')"/>' :[
-            <xsl:for-each select="gmd:keyword//gmd:LocalisedCharacterString[@locale = $langId and text() != '']">
-              <xsl:value-of select="concat('''', replace(., '''', '\\'''), '''')"/>
+            <xsl:for-each select="current-group()/gmd:keyword//gmd:LocalisedCharacterString[@locale = $langId and text() != '']">
+              {'value': <xsl:value-of select="concat('''', replace(., '''', '\\'''), '''')"/>,
+              'link': '<xsl:value-of select="@xlink:href"/>'}
               <xsl:if test="position() != last()">,</xsl:if>
             </xsl:for-each>
             ]
@@ -557,12 +564,15 @@
         <Field name="format" string="{string(.)}" store="true" index="true"/>
       </xsl:for-each>
 
+      <!-- For local atom feed services -->
+      <xsl:if test="count(gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource[gmd:function/gmd:CI_OnLineFunctionCode/@codeListValue='download'])>0">
+        <Field name="has_atom" string="true" store="false" index="true"/>
+      </xsl:if>
+
       <xsl:for-each select="gmd:transferOptions/gmd:MD_DigitalTransferOptions">
         <xsl:variable name="tPosition" select="position()"></xsl:variable>
-        <xsl:for-each select="gmd:onLine/gmd:CI_OnlineResource[
-        gmd:name/*/gmd:textGroup/gmd:LocalisedCharacterString[@locale=$langId] or
-        gmd:description/*/gmd:textGroup/gmd:LocalisedCharacterString[@locale=$langId]
-        ]">
+
+        <xsl:for-each select="gmd:onLine/gmd:CI_OnlineResource">
           <xsl:variable name="download_check"><xsl:text>&amp;fname=&amp;access</xsl:text></xsl:variable>
           <xsl:variable name="linkage" select="gmd:linkage/gmd:URL" />
           <xsl:variable name="title"
@@ -713,9 +723,10 @@
 
             <xsl:variable name="crsDetails">
             {
-             "code": "<xsl:value-of select="gmd:codeSpace/*/text()"/>:<xsl:value-of select="gmd:code/*/text()"/>",
-             "name": "<xsl:value-of select="gmd:code/*/@xlink:title"/>",
-             "url": "<xsl:value-of select="gmd:code/*/@xlink:href"/>"
+              "code": "<xsl:value-of select="gmd:code/*/text()"/>",
+              "codeSpace": "<xsl:value-of select="gmd:codeSpace/*/text()"/>",
+              "name": "<xsl:value-of select="gmd:code/*/@xlink:title"/>",
+              "url": "<xsl:value-of select="gmd:code/*/@xlink:href"/>"
             }
             </xsl:variable>
 

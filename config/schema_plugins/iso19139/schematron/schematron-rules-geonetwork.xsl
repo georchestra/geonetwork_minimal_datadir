@@ -4,7 +4,6 @@
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:schold="http://www.ascc.net/xml/schematron"
-                xmlns:gml="http://www.opengis.net/gml"
                 xmlns:gmd="http://www.isotc211.org/2005/gmd"
                 xmlns:srv="http://www.isotc211.org/2005/srv"
                 xmlns:gco="http://www.isotc211.org/2005/gco"
@@ -177,8 +176,7 @@
 
    <!--SCHEMA SETUP-->
 <xsl:template match="/">
-      <svrl:schematron-output xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
-                              title="Schematron validation / GeoNetwork recommendations"
+      <svrl:schematron-output xmlns:svrl="http://purl.oclc.org/dsdl/svrl" title="GeoNetwork recommendations"
                               schemaVersion="">
          <xsl:comment>
             <xsl:value-of select="$archiveDirParameter"/>
@@ -189,7 +187,6 @@
          
         <xsl:value-of select="$fileDirParameter"/>
          </xsl:comment>
-         <svrl:ns-prefix-in-attribute-values uri="http://www.opengis.net/gml" prefix="gml"/>
          <svrl:ns-prefix-in-attribute-values uri="http://www.isotc211.org/2005/gmd" prefix="gmd"/>
          <svrl:ns-prefix-in-attribute-values uri="http://www.isotc211.org/2005/srv" prefix="srv"/>
          <svrl:ns-prefix-in-attribute-values uri="http://www.isotc211.org/2005/gco" prefix="gco"/>
@@ -204,12 +201,12 @@
             </xsl:attribute>
             <xsl:apply-templates/>
          </svrl:active-pattern>
-         <xsl:apply-templates select="/" mode="M7"/>
+         <xsl:apply-templates select="/" mode="M6"/>
       </svrl:schematron-output>
    </xsl:template>
 
    <!--SCHEMATRON PATTERNS-->
-<svrl:text xmlns:svrl="http://purl.oclc.org/dsdl/svrl">Schematron validation / GeoNetwork recommendations</svrl:text>
+<svrl:text xmlns:svrl="http://purl.oclc.org/dsdl/svrl">GeoNetwork recommendations</svrl:text>
 
    <!--PATTERN
         $loc/strings/M500-->
@@ -220,23 +217,21 @@
   <!--RULE
       -->
 <xsl:template match="//gmd:MD_Metadata|//*[@gco:isoType='gmd:MD_Metadata']" priority="1000"
-                 mode="M7">
+                 mode="M6">
       <svrl:fired-rule xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
                        context="//gmd:MD_Metadata|//*[@gco:isoType='gmd:MD_Metadata']"/>
       <xsl:variable name="language"
                     select="gmd:language/gco:CharacterString|gmd:language/gmd:LanguageCode/@codeListValue"/>
       <xsl:variable name="localeAndNoLanguage"
-                    select="not(gmd:locale and gmd:language/@gco:nilReason='missing')                 and not(gmd:locale and not(gmd:language))"/>
-      <xsl:variable name="duplicateLanguage"
-                    select="not(gmd:locale/gmd:PT_Locale/gmd:languageCode/gmd:LanguageCode/@codeListValue=$language)"/>
+                    select="gmd:locale and (gmd:language/@gco:nilReason='missing' or not(gmd:language))"/>
 
       <!--ASSERT
       -->
 <xsl:choose>
-         <xsl:when test="$localeAndNoLanguage"/>
+         <xsl:when test="not($localeAndNoLanguage)"/>
          <xsl:otherwise>
             <svrl:failed-assert xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
-                                test="$localeAndNoLanguage">
+                                test="not($localeAndNoLanguage)">
                <xsl:attribute name="location">
                   <xsl:apply-templates select="." mode="schematron-select-full-path"/>
                </xsl:attribute>
@@ -249,9 +244,9 @@
 
       <!--REPORT
       -->
-<xsl:if test="$localeAndNoLanguage">
+<xsl:if test="not($localeAndNoLanguage)">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
-                                 test="$localeAndNoLanguage">
+                                 test="not($localeAndNoLanguage)">
             <xsl:attribute name="location">
                <xsl:apply-templates select="." mode="schematron-select-full-path"/>
             </xsl:attribute>
@@ -263,41 +258,10 @@
                <xsl:text/>"</svrl:text>
          </svrl:successful-report>
       </xsl:if>
-
-      <!--ASSERT
-      -->
-<xsl:choose>
-         <xsl:when test="$duplicateLanguage"/>
-         <xsl:otherwise>
-            <svrl:failed-assert xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
-                                test="$duplicateLanguage">
-               <xsl:attribute name="location">
-                  <xsl:apply-templates select="." mode="schematron-select-full-path"/>
-               </xsl:attribute>
-               <svrl:text>
-                  <xsl:copy-of select="$loc/strings/alert.M501"/>
-               </svrl:text>
-            </svrl:failed-assert>
-         </xsl:otherwise>
-      </xsl:choose>
-
-      <!--REPORT
-      -->
-<xsl:if test="$duplicateLanguage">
-         <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
-                                 test="$duplicateLanguage">
-            <xsl:attribute name="location">
-               <xsl:apply-templates select="." mode="schematron-select-full-path"/>
-            </xsl:attribute>
-            <svrl:text>
-               <xsl:copy-of select="$loc/strings/report.M501"/>
-            </svrl:text>
-         </svrl:successful-report>
-      </xsl:if>
-      <xsl:apply-templates select="*|comment()|processing-instruction()" mode="M7"/>
+      <xsl:apply-templates select="*|comment()|processing-instruction()" mode="M6"/>
    </xsl:template>
-   <xsl:template match="text()" priority="-1" mode="M7"/>
-   <xsl:template match="@*|node()" priority="-2" mode="M7">
-      <xsl:apply-templates select="*|comment()|processing-instruction()" mode="M7"/>
+   <xsl:template match="text()" priority="-1" mode="M6"/>
+   <xsl:template match="@*|node()" priority="-2" mode="M6">
+      <xsl:apply-templates select="*|comment()|processing-instruction()" mode="M6"/>
    </xsl:template>
 </xsl:stylesheet>
