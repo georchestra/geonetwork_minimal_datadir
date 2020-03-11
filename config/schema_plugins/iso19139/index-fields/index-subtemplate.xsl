@@ -62,7 +62,6 @@
                 </xsl:when>
                 <xsl:otherwise>
                     <Document locale="">
-                        <Field name="_docLocale" string="{$isoDocLangId}" store="true" index="true"/>
                         <xsl:apply-templates mode="index" select="$root">
                         </xsl:apply-templates>
                     </Document>
@@ -199,7 +198,7 @@
     <xsl:template mode="index" match="gmd:DQ_DomainConsistency[count(ancestor::node()) =  1]">
         <Field name="_title"
                string="{if ($title != '') then $title
-                        else gmd:result/*/gmd:specification/*/gmd:title/*/text()}"
+                        else gmd:result/*/gmd:specification/*/gmd:title/gco:CharacterString}"
                store="true" index="true"/>
 
         <xsl:call-template name="subtemplate-common-fields"/>

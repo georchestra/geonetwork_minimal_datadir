@@ -36,8 +36,4 @@
   <providedBy>Provided by</providedBy>
   <shareOnSocialSite>Share on social sites</shareOnSocialSite>
   <viewMode>Views</viewMode>
-
-  <trueValue>Yes</trueValue>
-  <falseValue>No</falseValue>
-  <nilValue>Undefined</nilValue>
 </strings>

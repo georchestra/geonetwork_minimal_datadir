@@ -74,8 +74,9 @@
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
       <language>
-        <LanguageCode codeList="http://www.loc.gov/standards/iso639-2/"
-                      codeListValue="{$lang}"/>
+        <gco:CharacterString>
+          <xsl:value-of select="$lang"/>
+        </gco:CharacterString>
         <!-- English is default. Not available in GetCapabilities.
                 Selected by user from GUI -->
       </language>

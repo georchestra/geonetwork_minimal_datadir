@@ -26,14 +26,11 @@
                 xmlns:dc="http://purl.org/dc/elements/1.1/"
                 xmlns:dct="http://purl.org/dc/terms/"
                 xmlns:xlink="http://www.w3.org/1999/xlink"
-                xmlns:gn-fn-index="http://geonetwork-opensource.org/xsl/functions/index"
                 xmlns:daobs="http://daobs.org"
                 xmlns:saxon="http://saxon.sf.net/"
                 extension-element-prefixes="saxon"
                 exclude-result-prefixes="#all"
                 version="2.0">
-
-  <xsl:import href="common/index-utils.xsl"/>
 
   <xsl:output method="xml" indent="yes"/>
 
@@ -42,7 +39,6 @@
               omit-xml-declaration="yes"
               encoding="utf-8"
               escape-uri-attributes="yes"/>
-
 
   <!-- List of keywords to search for to flag a record as opendata.
    Do not put accents or upper case letters here as comparison will not
@@ -69,8 +65,13 @@
   <xsl:template match="simpledc"
                 mode="index">
     <!-- Main variables for the document -->
-    <xsl:variable name="identifier" as="xs:string?"
-                  select="dc:identifier[1]"/>
+    <xsl:variable name="identifier" as="xs:string"
+                  select="dc:identifier"/>
+
+
+    <xsl:message><xsl:value-of select="concat(
+      '#', count(preceding-sibling::simpledc), $identifier)"/>
+    </xsl:message>
 
     <!-- Create a first document representing the main record. -->
     <doc>
@@ -148,12 +149,7 @@
       <xsl:for-each select="(dct:references|dc:relation)[normalize-space(.) != '']">
         <xsl:variable name="name" select="tokenize(., '/')[last()]"/>
         <!-- Index link where last token after the last / is the link name. -->
-        <link type="object">{
-          "protocol":"<xsl:value-of select="'WWW-LINK'"/>",
-          "url":"<xsl:value-of select="gn-fn-index:json-escape(.)"/>",
-          "name":"<xsl:value-of select="gn-fn-index:json-escape($name)"/>",
-          "description":""
-          }</link>
+        <link><xsl:value-of select="concat($name, '||', ., '|WWW-LINK|WWW:LINK|0')"/></link>
       </xsl:for-each>
       <xsl:for-each select="(dct:references|dc:relation)[normalize-space(.) != ''
                               and matches(., '.*(.gif|.png.|.jpeg|.jpg)$', 'i')]">

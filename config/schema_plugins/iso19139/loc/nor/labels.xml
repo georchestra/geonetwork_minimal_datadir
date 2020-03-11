@@ -2335,7 +2335,7 @@
     <description>Main theme(s) of the datset</description>
     <condition>mandatory</condition>
   </element>
-  <element name="gmd:MD_TopicCategoryCode" alias="topicCategory">
+  <element name="gmd:MD_TopicCategoryCode">
     <label>Tematisk hovedkategori</label>
     <description>Grov overordnet gruppering av tematiske kategorier for å
       muliggjøre søk på geografiske datasett. Kan også anvendes for å
@@ -3053,7 +3053,7 @@
     </description>
   </element>
   <element name="xlink:href">
-    <label>URL</label>
+    <label>Link href</label>
     <description>Supplies the data that allows an XLink application to find a remote resource (or
       resource fragment) [W3C XLINK]
     </description>

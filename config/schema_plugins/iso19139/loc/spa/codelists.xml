@@ -1615,7 +1615,7 @@
     </entry>-->
   </codelist>
   <!-- ==================================================== -->
-  <codelist name="gmd:MD_TopicCategoryCode" alias="topicCategory">
+  <codelist name="gmd:MD_TopicCategoryCode">
     <entry>
       <code>farming</code>
       <label>Agricultura</label>

@@ -24,8 +24,7 @@
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:gmd="http://www.isotc211.org/2005/gmd"
-                xmlns:gml="http://www.opengis.net/gml/3.2"
-                xmlns:gml320="http://www.opengis.net/gml"
+                xmlns:gml="http://www.opengis.net/gml"
                 xmlns:gco="http://www.isotc211.org/2005/gco"
                 version="2.0">
 
@@ -50,10 +49,10 @@
     * not multicurve
     * not empty (Empty geometry cause issue with shapefile index https://github.com/geonetwork/core-geonetwork/issues/259)
           -->
-    <xsl:for-each select="gmd:polygon/(gml:*|gml320:*)[
-                            local-name() != 'MultiCurve' and
+    <xsl:for-each select="gmd:polygon/gml:*[
+                            name() != 'gml:MultiCurve' and
                             count(*) > 0 and
-                            .//(gml:posList|gml320:posList) != '']">
+                            .//gml:posList != '']">
       <xsl:copy-of select="."/>
     </xsl:for-each>
   </xsl:template>

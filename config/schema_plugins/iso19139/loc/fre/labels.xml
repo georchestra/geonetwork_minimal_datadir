@@ -4390,7 +4390,6 @@ la non-évaluation</b>, dans le cadre de métadonnées INSPIRE
       <option value="FILE:RASTER">Fichier SIG RASTER</option>
       <option value="WWW:LINK-1.0-http--ical">iCalendar (URL)</option>
       <option value="WWW:LINK-1.0-http--link" default="">Adresse Internet (URL)</option>
-      <option value="DOI">Digital Object Identifier (DOI)</option>
       <option value="WWW:LINK-1.0-http--partners">Site partenaire (URL)</option>
       <option value="WWW:LINK-1.0-http--related">Site associé (URL)</option>
       <option value="WWW:LINK-1.0-http--rss">Fil RSS (URL)</option>
@@ -5190,7 +5189,7 @@ l’IGN (WPS)
   </element>
   <element name="gmd:title" id="360.0"
            context="/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:title">
-    <label>Intitulé de la ressource</label>
+    <label>Intitulé de la resource</label>
     <description>Nom avec lequel la ressource en question est connue</description>
     <help for="inspire"><![CDATA[<b>Exigence INSPIRE :</b>
     L’intitulé (ou le titre) de la ressource doit être un nom caractéristique
@@ -6402,12 +6401,8 @@ http://www.sandre.eaufrance.fr/?urn=urn:sandre:ensembledonnees:BDCarthage:FXX:::
     <label>Nom</label>
     <description></description>
   </element>
-  <element name="xlink:title">
-    <label>Libellé de l'URL</label>
-    <description></description>
-  </element>
   <element name="xlink:href">
-    <label>URL</label>
+    <label>Link href</label>
     <description>Supplies the data that allows an XLink application to find a remote resource (or
       resource fragment) [W3C XLINK]
     </description>
@@ -6492,10 +6487,6 @@ http://www.sandre.eaufrance.fr/?urn=urn:sandre:ensembledonnees:BDCarthage:FXX:::
     <label>Minimum</label>
     <description/>
   </element>
-  <element name="gco:upper">
-    <label>Maximum</label>
-    <description></description>
-  </element>
   <element name="gmx:language">
     <label>Langue des métadonnées</label>
     <description></description>
@@ -6542,13 +6533,7 @@ http://www.sandre.eaufrance.fr/?urn=urn:sandre:ensembledonnees:BDCarthage:FXX:::
   <element name="gco:Measure">
     <label>Mesure</label>
   </element>
-  <element name="gco:Integer">
-    <label>Nombre entier</label>
-  </element>
   <element name="gco:Scale">
     <label>Échelle</label>
-  </element>
-  <element name="gco:Boolean">
-    <label>Booléen</label>
   </element>
 </labels>

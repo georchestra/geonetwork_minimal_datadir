@@ -230,9 +230,9 @@
         <xsl:variable name="keywordWithNoThesaurus"
                       select="/simpledc/dc:subject[text() != '']"/>
         <xsl:if test="count($keywordWithNoThesaurus) > 0">
-          'otherKeywords': [
+          'keywords': [
           <xsl:for-each select="$keywordWithNoThesaurus">
-            {'value': <xsl:value-of select="concat('''', replace(., '''', '\\'''), '''')"/>, 'link': ''}
+            <xsl:value-of select="concat('''', replace(., '''', '\\'''), '''')"/>
             <xsl:if test="position() != last()">,</xsl:if>
           </xsl:for-each>
           ]

@@ -26,8 +26,7 @@
                 xmlns:gts="http://www.isotc211.org/2005/gts"
                 xmlns:gco="http://www.isotc211.org/2005/gco"
                 xmlns:gmx="http://www.isotc211.org/2005/gmx"
-                xmlns:gml="http://www.opengis.net/gml/3.2"
-                xmlns:gml320="http://www.opengis.net/gml"
+                xmlns:gml="http://www.opengis.net/gml"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:gn="http://www.fao.org/geonetwork"
                 xmlns:gn-fn-metadata="http://geonetwork-opensource.org/xsl/functions/metadata"
@@ -43,36 +42,19 @@
 
   <!-- Readonly elements -->
   <xsl:template mode="mode-iso19139" priority="2100" match="gmd:fileIdentifier|gmd:dateStamp">
-    <xsl:param name="schema" select="$schema" required="no"/>
-    <xsl:param name="labels" select="$labels" required="no"/>
-    <xsl:param name="overrideLabel" select="''" required="no"/>
 
     <xsl:variable name="xpath" select="gn-fn-metadata:getXPath(.)"/>
     <xsl:variable name="isoType" select="if (../@gco:isoType) then ../@gco:isoType else ''"/>
-    <xsl:variable name="fieldLabelConfig"
+    <xsl:variable name="labelConfig"
                   select="gn-fn-metadata:getLabel($schema, name(), $labels, name(..), $isoType, $xpath)"/>
-
-    <xsl:variable name="labelConfig">
-      <xsl:choose>
-        <xsl:when test="$overrideLabel != ''">
-          <element>
-            <label><xsl:value-of select="$overrideLabel"/></label>
-          </element>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:copy-of select="$fieldLabelConfig"/>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
-
 
     <xsl:call-template name="render-element">
       <xsl:with-param name="label"
-                      select="$labelConfig/*"/>
+                      select="$labelConfig"/>
       <xsl:with-param name="value" select="*"/>
       <xsl:with-param name="cls" select="local-name()"/>
       <xsl:with-param name="xpath" select="$xpath"/>
-      <xsl:with-param name="type" select="gn-fn-metadata:getFieldType($editorConfig, name(), '', $xpath)"/>
+      <xsl:with-param name="type" select="gn-fn-metadata:getFieldType($editorConfig, name(), '')"/>
       <xsl:with-param name="name" select="''"/>
       <xsl:with-param name="editInfo" select="*/gn:element"/>
       <xsl:with-param name="parentEditInfo" select="gn:element"/>
@@ -80,6 +62,7 @@
     </xsl:call-template>
 
   </xsl:template>
+
 
   <!-- Measure elements, gco:Distance, gco:Angle, gco:Scale, gco:Length, ... -->
   <xsl:template mode="mode-iso19139" priority="2000" match="*[gco:*/@uom]">
@@ -120,7 +103,7 @@
           (<xsl:value-of select="$labelMeasureType/label"/>)
         </xsl:if>
       </label>
-      <div class="col-sm-9 col-xs-11 gn-value nopadding-in-table">
+      <div class="col-sm-9 gn-value">
         <xsl:variable name="elementRef"
                       select="gco:*/gn:element/@ref"/>
         <xsl:variable name="helper"
@@ -135,29 +118,57 @@
               saxon:serialize($helper, 'default-serialize-mode'))"/>
         </textarea>
       </div>
-      <div class="col-sm-1 col-xs-1 gn-control">
+      <div class="col-sm-1 gn-control">
         <xsl:call-template name="render-form-field-control-remove">
           <xsl:with-param name="editInfo" select="*/gn:element"/>
           <xsl:with-param name="parentEditInfo" select="$refToDelete"/>
         </xsl:call-template>
       </div>
-
-      <div class="col-sm-offset-2 col-sm-9">
-        <xsl:call-template name="get-errors"/>
-      </div>
     </div>
   </xsl:template>
 
 
+  <!-- Duration
 
+       xsd:duration elements use the following format:
+
+       Format: PnYnMnDTnHnMnS
+
+       *  P indicates the period (required)
+       * nY indicates the number of years
+       * nM indicates the number of months
+       * nD indicates the number of days
+       * T indicates the start of a time section (required if you are going to specify hours, minutes, or seconds)
+       * nH indicates the number of hours
+       * nM indicates the number of minutes
+       * nS indicates the number of seconds
+
+       A custom directive is created.
+  -->
+  <xsl:template mode="mode-iso19139" match="gts:TM_PeriodDuration|gml:duration" priority="200">
+
+    <xsl:variable name="xpath" select="gn-fn-metadata:getXPath(.)"/>
+    <xsl:variable name="isoType" select="if (../@gco:isoType) then ../@gco:isoType else ''"/>
+    <xsl:variable name="labelConfig" select="gn-fn-metadata:getLabel($schema, name(), $labels, name(..), $isoType, $xpath)"/>
+
+    <xsl:call-template name="render-element">
+      <xsl:with-param name="label"
+                      select="$labelConfig"/>
+      <xsl:with-param name="value" select="."/>
+      <xsl:with-param name="cls" select="local-name()"/>
+      <xsl:with-param name="xpath" select="$xpath"/>
+      <xsl:with-param name="directive" select="'gn-field-duration'"/>
+      <xsl:with-param name="editInfo" select="gn:element"/>
+      <xsl:with-param name="parentEditInfo" select="../gn:element"/>
+    </xsl:call-template>
+
+  </xsl:template>
 
   <!-- ===================================================================== -->
   <!-- gml:TimePeriod (format = %Y-%m-%dThh:mm:ss) -->
   <!-- ===================================================================== -->
 
-  <xsl:template mode="mode-iso19139"
-                match="gml:beginPosition|gml:endPosition|gml:timePosition|
-                       gml320:beginPosition|gml320:endPosition|gml320:timePosition"
+  <xsl:template mode="mode-iso19139" match="gml:beginPosition|gml:endPosition|gml:timePosition"
                 priority="200">
 
 
@@ -208,27 +219,14 @@
   <xsl:template mode="mode-iso19139" match="gmd:EX_GeographicBoundingBox" priority="2000">
     <xsl:param name="schema" select="$schema" required="no"/>
     <xsl:param name="labels" select="$labels" required="no"/>
-    <xsl:param name="overrideLabel" select="''" required="no"/>
 
     <xsl:variable name="xpath" select="gn-fn-metadata:getXPath(.)"/>
     <xsl:variable name="isoType" select="if (../@gco:isoType) then ../@gco:isoType else ''"/>
     <xsl:variable name="labelConfig" select="gn-fn-metadata:getLabel($schema, name(), $labels, name(..), $isoType, $xpath)"/>
 
-    <xsl:variable name="labelVal">
-      <xsl:choose>
-        <xsl:when test="$overrideLabel != ''">
-          <xsl:value-of select="$overrideLabel"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="$labelConfig/label"/>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
-
-
     <xsl:call-template name="render-boxed-element">
       <xsl:with-param name="label"
-                      select="$labelVal"/>
+                      select="$labelConfig/label"/>
       <xsl:with-param name="editInfo" select="../gn:element"/>
       <xsl:with-param name="cls" select="local-name()"/>
       <xsl:with-param name="subTreeSnippet">
@@ -284,8 +282,7 @@
       <xsl:with-param name="subTreeSnippet">
 
         <xsl:variable name="geometry">
-          <xsl:apply-templates select="gmd:polygon/gml:MultiSurface|gmd:polygon/gml:LineString|
-                                       gmd:polygon/gml320:MultiSurface|gmd:polygon/gml320:LineString"
+          <xsl:apply-templates select="gmd:polygon/gml:MultiSurface|gmd:polygon/gml:LineString"
                                mode="gn-element-cleaner"/>
         </xsl:variable>
 

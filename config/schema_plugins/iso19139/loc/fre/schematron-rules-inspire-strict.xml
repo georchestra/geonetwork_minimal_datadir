@@ -23,7 +23,7 @@
   -->
 
 <strings>
-  <schematron.title>Règles INSPIRE strictes</schematron.title>
+  <schematron.title>Inspire strict rules extension</schematron.title>
   <report.M44.spec>
     <div>Specification:</div>
   </report.M44.spec>

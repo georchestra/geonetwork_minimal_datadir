@@ -78,8 +78,9 @@
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
       <language>
-        <LanguageCode codeList="http://www.loc.gov/standards/iso639-2/"
-                      codeListValue="{$lang}"/>
+        <gco:CharacterString>
+          <xsl:value-of select="$lang"/>
+        </gco:CharacterString>
       </language>
 
       <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -393,8 +394,7 @@
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <language gco:nilReason="missing">
-      <LanguageCode codeList="http://www.loc.gov/standards/iso639-2/"
-                    codeListValue=""/>
+      <gco:CharacterString/>
     </language>
 
     <characterSet>

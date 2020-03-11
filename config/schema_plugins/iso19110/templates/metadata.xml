@@ -195,7 +195,8 @@
                     <gco:Integer>1</gco:Integer>
                   </gco:lower>
                   <gco:upper>
-                    <gco:UnlimitedInteger xsi:nil="true" isInfinite="true" />
+                    <gco:UnlimitedInteger xsi:nil="false" isInfinite="false">1
+                    </gco:UnlimitedInteger>
                   </gco:upper>
                 </gco:MultiplicityRange>
               </gco:range>

@@ -1533,17 +1533,17 @@
     <!-- Used for facet translation only and not displayed in editor -->
     <entry hideInEditMode="true">
       <code>map</code>
-      <label>карта</label>
+      <label>Map</label>
       <description></description>
     </entry>
     <entry hideInEditMode="true">
       <code>staticMap</code>
-      <label>Статическая карта</label>
+      <label>Static map</label>
       <description></description>
     </entry>
     <entry hideInEditMode="true">
       <code>interactiveMap</code>
-      <label>Интерактивная карта</label>
+      <label>Interactive map</label>
       <description></description>
     </entry>
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -1590,7 +1590,7 @@
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - -->
   </codelist>
   <!-- ==================================================== -->
-  <codelist name="gmd:MD_TopicCategoryCode" alias="topicCategory">
+  <codelist name="gmd:MD_TopicCategoryCode">
     <entry>
       <code>farming</code>
       <label>Сельское хозяйство</label>

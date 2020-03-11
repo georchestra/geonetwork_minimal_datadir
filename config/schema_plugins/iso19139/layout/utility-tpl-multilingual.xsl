@@ -66,8 +66,8 @@
           </xsl:variable>
           <xsl:if test="$mainLanguage">
             <xsl:variable name="mainLanguageId"
-                          select="($metadata/gmd:locale/gmd:PT_Locale[
-                                gmd:languageCode/gmd:LanguageCode/@codeListValue = $mainLanguage]/@id)[1]"/>
+                          select="$metadata/gmd:locale/gmd:PT_Locale[
+                                gmd:languageCode/gmd:LanguageCode/@codeListValue = $mainLanguage]/@id"/>
 
             <lang>
               <xsl:value-of

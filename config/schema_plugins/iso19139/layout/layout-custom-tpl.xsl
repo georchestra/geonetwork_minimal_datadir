@@ -57,7 +57,6 @@
         <header>
           <xsl:for-each select="$tableConfig/header/col">
             <col>
-              <xsl:copy-of select="@*"/>
               <xsl:if test="@label">
                 <!-- TODO: column names may comes from strings.xml -->
                 <xsl:value-of select="gn-fn-metadata:getLabel($schema, @label, $labels, '', $isoType, $xpath)/label"/>
@@ -74,7 +73,6 @@
           <row>
             <xsl:for-each select="col">
               <col>
-                
                 <xsl:if test="@del != ''">
                   <xsl:attribute name="remove" select="'true'"/>
 
@@ -134,20 +132,15 @@
 
     <!-- Return only the new row in embed mode. -->
     <xsl:choose>
-      <xsl:when test="$tableConfig/@fieldset = 'false' or ($isEmbeddedMode and not($isFirstOfItsKind))">
+      <xsl:when test="$isEmbeddedMode and not($isFirstOfItsKind)">
         <xsl:call-template name="render-table">
           <xsl:with-param name="values" select="$values"/>
         </xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
-
-        <xsl:variable name="tableTitle" select="if (($tableConfig/@label) and (string($strings/*[name() = $tableConfig/@label])))
-              then $strings/*[name() = $tableConfig/@label]
-              else gn-fn-metadata:getLabel($schema, $name, $labels, name(..), $isoType, $xpath)/label" />
-
         <xsl:call-template name="render-boxed-element">
           <xsl:with-param name="label"
-                          select="$tableTitle"/>
+                          select="gn-fn-metadata:getLabel($schema, $name, $labels, name(..), $isoType, $xpath)/label"/>
           <xsl:with-param name="cls" select="local-name()"/>
           <xsl:with-param name="subTreeSnippet">
 

@@ -1699,7 +1699,7 @@
         </entry>-->
   </codelist>
   <!-- ==================================================== -->
-  <codelist name="gmd:MD_TopicCategoryCode" alias="topicCategory">
+  <codelist name="gmd:MD_TopicCategoryCode">
     <entry>
       <code>farming</code>
       <label>Farming</label>
@@ -2252,7 +2252,7 @@
     </entry>
     <entry>
       <code>withheld</code>
-      <label>Withheld</label>
+      <label>With held</label>
     </entry>
   </codelist>
 
