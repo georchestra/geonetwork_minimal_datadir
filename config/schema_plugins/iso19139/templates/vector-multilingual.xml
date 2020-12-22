@@ -172,7 +172,7 @@
       <gmd:citation>
         <gmd:CI_Citation>
           <gmd:title xsi:type="gmd:PT_FreeText_PropertyType">
-            <gco:CharacterString>Template for Vector data in ISO19139 (multilingual)
+            <gco:CharacterString>Template for Vector data (ISO19139) (multilingual)
             </gco:CharacterString>
             <gmd:PT_FreeText>
               <gmd:textGroup>
