@@ -1,4 +1,4 @@
-geonetwork minimal datadir - v3.4.1
+geonetwork minimal datadir - v3.8.2
 ===========================================
 
 The main differences with the data dir which ships with GeoNetwork in ```web/src/main/webapp/WEB-INF/data``` are:
