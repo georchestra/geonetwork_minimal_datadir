@@ -799,7 +799,7 @@ Le nom de l'organisation est
       <svrl:fired-rule xmlns:svrl="http://purl.oclc.org/dsdl/svrl" context="//gex:EX_Extent"/>
       <xsl:variable name="description" select="gex:description[text() != '']"/>
       <xsl:variable name="geographicId"
-                    select="gex:geographicElement/gex:EX_GeographicDescription/                          gex:geographicIdentifier[normalize-space(*) != '']"/>
+                    select="gex:geographicElement/gex:EX_GeographicDescription/                          gex:geographicIdentifier[normalize-space(mcc:*) != '']"/>
       <xsl:variable name="geographicBox"
                     select="gex:geographicElement/                          gex:EX_GeographicBoundingBox[                          normalize-space(gex:westBoundLongitude/gco:Decimal) != '' and                          normalize-space(gex:eastBoundLongitude/gco:Decimal) != '' and                          normalize-space(gex:southBoundLatitude/gco:Decimal) != '' and                          normalize-space(gex:northBoundLatitude/gco:Decimal) != ''                          ]"/>
       <xsl:variable name="geographicPoly"
