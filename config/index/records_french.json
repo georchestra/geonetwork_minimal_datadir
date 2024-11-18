@@ -124,7 +124,7 @@
           },
           "french_stemmer": {
             "type": "stemmer",
-            "language": "light_french"
+            "language": "minimal_french"
           },
           "keepInspireServiceTypes": {
             "type": "keep",
