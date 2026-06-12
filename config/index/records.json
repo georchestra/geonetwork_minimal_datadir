@@ -4,7 +4,7 @@
       "max_result_window": 15000,
       "max_inner_result_window": 200,
       "query.default_field": "any.default",
-      "mapping.total_fields.limit": 4000,
+      "mapping.total_fields.limit": 6000,
       "analysis": {
         "normalizer": {
           "sorting": {
@@ -1496,6 +1496,21 @@
                 "type": "keyword",
                 "copy_to": ["any.default"]
               },
+              "identifiers": {
+                "type": "nested",
+                "properties": {
+                  "code": {
+                    "type": "keyword",
+                    "copy_to": ["any.default"]
+                  },
+                  "codeSpace": {
+                    "type": "keyword"
+                  },
+                  "link": {
+                    "type": "keyword"
+                  }
+                }
+              },
               "role": {
                 "type": "keyword"
               }
@@ -1598,6 +1613,26 @@
             "fielddata": true,
             "analyzer": "keepInspireServiceTypes",
             "search_analyzer": "keyword"
+          }
+        }
+      },
+      {
+        "semsearch": {
+          "match": "semsearch",
+          "mapping": {
+            "type": "nested",
+            "properties": {
+              "text": {
+                "type": "object",
+                "enabled": false
+              },
+              "textEmbedding": {
+                "type": "dense_vector",
+                "dims": 1024,
+                "index": true,
+                "similarity": "cosine"
+              }
+            }
           }
         }
       }
@@ -2305,6 +2340,17 @@
             "type": "keyword"
           }
         }
+      },
+      "resourceEdition": {
+        "type": "text"
+      },
+      "resourceEditionDate": {
+        "type": "date",
+        "format": "date_optional_time",
+        "ignore_malformed": true
+      },
+      "standardVersion": {
+        "type": "text"
       }
     }
   }
